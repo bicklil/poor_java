@@ -118,7 +118,7 @@ public class ListeGrandEntier implements GrandEntier {
 		}
 		
 		// si taille egale on teste 1 par 1
-		for(int i = this.size()-1; i>0; i--) {
+		for(int i = this.size()-1; i>=0; i--) {
 			if(this.digit(i) != g.digit(i)) {
 				//chiffre different
 				if (this.digit(i) > g.digit(i)) {
@@ -207,14 +207,26 @@ public class ListeGrandEntier implements GrandEntier {
 	@Override
 	public GrandEntier mult(GrandEntier g) {
 		
-		ListeGrandEntier[] tabResultat = new ListeGrandEntier[g.size()];
-		ListeGrandEntier res = new ListeGrandEntier();
+		ListeGrandEntier tempo = new ListeGrandEntier();
+		GrandEntier res = new ListeGrandEntier();
 		int retenu = 0;
 		for(int i=0; i<g.size(); i++ ) {
-			for(int j=0; j<this.size(); j++) {
-				
+			tempo = new ListeGrandEntier();
+			tempo.chiffres.clear();
+			retenu = 0;
+			for(int j=0; j<i; j++) {
+				tempo.chiffres.add(0);
 			}
+			for(int j=0; j<this.size(); j++) {
+				tempo.chiffres.add((g.digit(i)*this.digit(j)+retenu)%10);
+				retenu = (g.digit(i)*this.digit(j)+retenu)/10;
+			}
+			if (retenu != 0) {
+				tempo.chiffres.add(retenu);
+			}
+			res = res.add(tempo);
 		}
+		
 		
 		return res;
 	}
@@ -225,10 +237,14 @@ public class ListeGrandEntier implements GrandEntier {
 	 * @return grand entier correspondant à la factorielle de <tt>g</tt>
 	 */
 	public static GrandEntier factorielle (GrandEntier g) {
-        //
-		// TODO A COMPLETER...
-		//
-		return null; // à modifier...
+		GrandEntier res = new ListeGrandEntier(1);
+		GrandEntier tempo = new ListeGrandEntier(1);
+		GrandEntier fixe = new ListeGrandEntier(1);
+		while (g.compareTo(tempo) != -1) {
+			res = res.mult(tempo);
+			tempo = tempo.add(fixe);
+		}
+		return res; // à modifier...
 	}
 
 }
